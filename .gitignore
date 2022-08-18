@@ -1,0 +1,7 @@
+# Folders
+**/*.idea
+**/*.gradle
+**/*out
+
+# Files
+**/*.DS_Store
