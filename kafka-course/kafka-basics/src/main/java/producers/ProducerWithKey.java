@@ -17,7 +17,7 @@ public class ProducerWithKey extends Producer {
     public void sendMessageWithKey(String topic, String key, String value) {
         ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, key, value);
         // send data with callback
-        keylessProducer.send(producerRecord, (metadata, e) -> {
+        producer.send(producerRecord, (metadata, e) -> {
             if (Objects.isNull(e)) {
                 log.info("The message has been sent to the topic. \n" +
                         "Topic: " + metadata.topic() + "\n" +

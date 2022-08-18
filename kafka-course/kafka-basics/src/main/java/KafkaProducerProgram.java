@@ -20,14 +20,14 @@ public class KafkaProducerProgram {
             // this is done in order to make kafka send messages to different partitions,
             // avoiding StickyPartition to send it to only one partition.
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        producerWithKey.flushProducer();
-        keylessProducer.flushProducer();
+        producerWithKey.finishProducer();
+        keylessProducer.finishProducer();
 
     }
 }

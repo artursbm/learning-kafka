@@ -10,7 +10,7 @@ public abstract class Producer {
 
     // create producer properties
     protected Properties properties;
-    protected KafkaProducer<String, String> keylessProducer;
+    protected KafkaProducer<String, String> producer;
 
     public Producer() {
         properties = new Properties();
@@ -18,10 +18,11 @@ public abstract class Producer {
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer .class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-        keylessProducer = new KafkaProducer<>(this.properties);
+        producer = new KafkaProducer<>(this.properties);
     }
 
-    public void flushProducer() {
-        keylessProducer.flush();
+    public void finishProducer() {
+        producer.flush();
+        producer.close();
     }
 }
