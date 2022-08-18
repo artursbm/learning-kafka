@@ -3,9 +3,9 @@ import org.slf4j.LoggerFactory;
 import producers.KeylessProducer;
 import producers.ProducerWithKey;
 
-public class KafkaProducerProgram {
+public class KafkaDemoProgram {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaProducerProgram.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(KafkaDemoProgram.class.getSimpleName());
 
     public static void main(String[] args) {
 
