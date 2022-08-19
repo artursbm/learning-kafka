@@ -3,20 +3,20 @@ import org.slf4j.LoggerFactory;
 import producers.KeylessProducer;
 import producers.ProducerWithKey;
 
-public class KafkaDemoProgram {
+public class ProducerDemo {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaDemoProgram.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class.getSimpleName());
 
     public static void main(String[] args) {
 
         log.info("Hello, kafka World! I'm a producer.");
 
 
-        KeylessProducer keylessProducer = new KeylessProducer(log);
-        ProducerWithKey producerWithKey = new ProducerWithKey(log);
+        var keylessProducer = new KeylessProducer(log);
+        var producerWithKey = new ProducerWithKey(log);
         for (int i = 0; i < 5; i++) {
-            keylessProducer.sendKeylessMessage("messages_topic", "This is the " + i + " th keyless message");
-            producerWithKey.sendMessageWithKey("messages_topic", "msg_id", "This is the " + i + " th message");
+            // keylessProducer.sendKeylessMessage(System.getenv("TOPIC"), "This is the " + i + " th keyless message");
+            producerWithKey.sendMessageWithKey(System.getenv("TOPIC"), "msg_id", "This is the " + i + " th message");
             // this is done in order to make kafka send messages to different partitions,
             // avoiding StickyPartition to send it to only one partition.
             try {

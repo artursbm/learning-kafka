@@ -8,17 +8,16 @@ import java.util.Properties;
 
 public abstract class Producer {
 
-    // create producer properties
-    protected Properties properties;
     protected KafkaProducer<String, String> producer;
 
     public Producer() {
-        properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer .class.getName());
+        // create producer properties
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("BOOTSTRAP_SERVER"));
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-        producer = new KafkaProducer<>(this.properties);
+        producer = new KafkaProducer<>(properties);
     }
 
     public void finishProducer() {

@@ -16,7 +16,7 @@ public class KeylessProducer extends Producer {
     }
 
     public void sendKeylessMessage(String topic, String value) {
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, value);
+        var producerRecord = new ProducerRecord<String, String>(topic, value);
         // send data with callback
         producer.send(producerRecord, (metadata, e) -> {
             if (Objects.isNull(e)) {
