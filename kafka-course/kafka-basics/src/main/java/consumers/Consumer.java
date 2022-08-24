@@ -2,6 +2,7 @@ package consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 
@@ -11,9 +12,9 @@ import java.util.Properties;
 
 public class Consumer {
 
-    private Logger log;
+    private static Logger log;
 
-    private String topic;
+    private final String topic;
 
     private KafkaConsumer<String, String> kafkaConsumer;
 
@@ -36,22 +37,35 @@ public class Consumer {
     }
 
     public void poll() {
-        if (kafkaConsumer.subscription().isEmpty()) subscribeToTopic();
+        try {
+            if (kafkaConsumer.subscription().isEmpty()) subscribeToTopic();
 
-        while (true) {
-            log.info("Polling...");
-            var records = kafkaConsumer.poll(Duration.ofMillis(1000));
+            while (true) {
+                log.info("Polling...");
+                var records = kafkaConsumer.poll(Duration.ofMillis(1000));
 
-            for (var record : records) {
-                log.info("Record consumed from topic " + this.topic + ": \n" +
-                        "Key: " + record.key() + "\n" +
-                        "Value: " + record.value() + "\n" +
-                        "Partition: " + record.partition() + "\n" +
-                        "Offset: " + record.offset() + "\n" +
-                        "Timestamp: " + record.timestamp() + "\n"
-                );
+                for (var record : records) {
+                    log.info("Record consumed from topic " + this.topic + ": \n" +
+                            "Key: " + record.key() + "\n" +
+                            "Value: " + record.value() + "\n" +
+                            "Partition: " + record.partition() + "\n" +
+                            "Offset: " + record.offset() + "\n" +
+                            "Timestamp: " + record.timestamp() + "\n"
+                    );
+                }
             }
+        } catch (WakeupException we) {
+            log.info("Wakeup exception as expected!");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            kafkaConsumer.close();
+            log.info("the consumer has been successfully closed!");
         }
+    }
+
+    public void wakeup() {
+        kafkaConsumer.wakeup();
     }
 
 
