@@ -1,6 +1,7 @@
 package consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.CooperativeStickyAssignor;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -25,6 +26,10 @@ public class Consumer {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        // to use partition assignment policy changed to an "iterative" method, where
+        // new consumers will be assigned to a partition without needing to stop the world
+        // (default method is to revoke every consumer's partitions, and then reassigning them)
+        // properties.setProperty(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, CooperativeStickyAssignor.class.getName());
 
         kafkaConsumer = new KafkaConsumer<>(properties);
         this.topic = topic;
@@ -41,7 +46,6 @@ public class Consumer {
             if (kafkaConsumer.subscription().isEmpty()) subscribeToTopic();
 
             while (true) {
-                log.info("Polling...");
                 var records = kafkaConsumer.poll(Duration.ofMillis(1000));
 
                 for (var record : records) {
