@@ -19,10 +19,11 @@ public class WikimediaEventProducer {
 
         var eventHandler = new WikimediaEventHandler(producer, eventsTopic, log);
         String sourceUrl = "https://stream.wikimedia.org/v2/stream/recentchange";
-
-        var eventSource = new EventSource.Builder(eventHandler, URI.create(sourceUrl)).build();
-
-        eventSource.start();
+        
+        var eventSourceBuilder = new EventSource.Builder(eventHandler, URI.create(sourceUrl));
+        try (var eventSource = eventSourceBuilder.build()) {
+            eventSource.start();
+        }
 
         TimeUnit.MINUTES.sleep(10);
 
