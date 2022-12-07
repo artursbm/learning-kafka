@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import java.util.Objects;
 
 
-public class KeylessProducer extends Producer {
+public class KeylessProducer<S> extends Producer {
 
     private Logger log;
 
@@ -15,8 +15,8 @@ public class KeylessProducer extends Producer {
         log = logger;
     }
 
-    public void sendKeylessMessage(String topic, String value) {
-        var producerRecord = new ProducerRecord<String, String>(topic, value);
+    public void sendKeylessMessage(String topic, S value) {
+        var producerRecord = new ProducerRecord<>(topic, value);
         // send data with callback
         producer.send(producerRecord, (metadata, e) -> {
             if (Objects.isNull(e)) {

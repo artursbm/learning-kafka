@@ -5,16 +5,16 @@ import org.slf4j.Logger;
 
 import java.util.Objects;
 
-public class ProducerWithKey extends Producer {
+public class ProducerWithKey<T,S> extends Producer<T,S> {
 
-    private Logger log;
+    private final Logger log;
 
     public ProducerWithKey(Logger logger) {
         super();
         log = logger;
     }
 
-    public void sendMessageWithKey(String topic, String key, String value) {
+    public void sendMessageWithKey(String topic, T key, S value) {
         var producerRecord = new ProducerRecord<>(topic, key, value);
         // send data with callback
         producer.send(producerRecord, (metadata, e) -> {

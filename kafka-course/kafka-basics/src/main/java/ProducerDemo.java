@@ -1,6 +1,5 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import producers.KeylessProducer;
 import producers.ProducerWithKey;
 
 public class ProducerDemo {
@@ -11,12 +10,10 @@ public class ProducerDemo {
 
         log.info("Hello, kafka World! I'm a producer.");
 
-
-        var keylessProducer = new KeylessProducer(log);
-        var producerWithKey = new ProducerWithKey(log);
+        var producerWithKey = new ProducerWithKey<Integer, String>(log);
         for (int i = 0; i < 5; i++) {
             // keylessProducer.sendKeylessMessage(System.getenv("TOPIC"), "This is the " + i + " th keyless message");
-            producerWithKey.sendMessageWithKey(System.getenv("TOPIC"), "msg_id", "This is the " + i + " th message");
+            producerWithKey.sendMessageWithKey(System.getenv("TOPIC"), i, "This is the " + i + " th message");
             // this is done in order to make kafka send messages to different partitions,
             // avoiding StickyPartition to send it to only one partition.
             try {
@@ -27,7 +24,6 @@ public class ProducerDemo {
         }
 
         producerWithKey.finishProducer();
-        keylessProducer.finishProducer();
 
     }
 }
